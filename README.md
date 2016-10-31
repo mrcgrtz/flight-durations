@@ -21,7 +21,7 @@ $ http --body https://flightduration.dev/ from==2016-11-10T16:25 to==2016-11-10T
     "to": "2016-11-10T20:40-05:00"
 }
 
-$ http --body http://localhost from==2016-12-14T13:50 to==2016-12-15T06:50 departureAirport==ZRH destinationAirport==HKT
+$ http --body https://flightduration.dev/ from==2016-12-14T13:50 to==2016-12-15T06:50 departureAirport==ZRH destinationAirport==HKT
 {
     "duration": "P0DT11H0M",
     "from": "2016-12-14T13:50+01:00",
