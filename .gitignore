@@ -1,0 +1,24 @@
+##############################################################################
+# macOS and Windows system files
+# @see https://github.com/github/gitignore/blob/master/Global/
+##############################################################################
+
+# Directory settings
+.DS_Store
+Desktop.ini
+
+# Thumbnails
+._*
+Thumbs.db
+
+# Drive-specific directories
+.Spotlight-V100
+.Trashes
+
+
+##############################################################################
+# Generated files (Node)
+##############################################################################
+
+node_modules
+npm-debug.log
