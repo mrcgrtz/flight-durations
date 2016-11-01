@@ -2,8 +2,6 @@
 
 Get actual flight durations using [timezone information](http://openflights.org/data.html) provided by OpenFlights.org.
 
-_Disclaimer:_ This is just a very hacky demonstration of a solution for a problem on work.
-
 ## Required parameters
 
 * `from` = departure datetime, i.e. `2016-11-10T16:25`
