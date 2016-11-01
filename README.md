@@ -1,6 +1,8 @@
 # Flight Durations (PHP)
 
-Get flight durations using [timezone information](http://openflights.org/data.html) provided by OpenFlights.org.
+Get actual flight durations using [timezone information](http://openflights.org/data.html) provided by OpenFlights.org.
+
+_Disclaimer:_ This is just a very hacky demonstration of a solution for a problem on work.
 
 ## Required parameters
 
