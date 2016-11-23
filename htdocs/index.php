@@ -11,6 +11,10 @@ $to = $request->query->get('to');
 $departureAirport = $request->query->get('departureAirport');
 $destinationAirport = $request->query->get('destinationAirport');
 
+/**
+ * Get timezones from CSV file.
+ * @return array Timezones for each airport
+ */
 function getTimezones() {
 	$timezones = array();
 	$flightData = array_map('str_getcsv', file(dirname(__FILE__) . '/../vendor/openflights/airports.dat'));
@@ -22,13 +26,26 @@ function getTimezones() {
 	return $timezones;
 }
 
-function getTimezoneForAirport($airport) {
+/**
+ * Get timezone name for a specific airport.
+ * @param  string $airport IATA airport code
+ * @return string          Timezone name
+ */
+function getTimezoneForAirport(string $airport) {
 	global $timezones;
 	$timezone = new DateTimeZone($timezones[$airport]);
 	return $timezone->getName();
 }
 
-function getDuration($from, $to, $departureAirport, $destinationAirport) {
+/**
+ * Get duration offset between two airports.
+ * @param  string $from               Departure date
+ * @param  string $to                 Destination datetime
+ * @param  string $departureAirport   IATA code for departure airport
+ * @param  string $destinationAirport IATA code for destination airport
+ * @return array                      Duration and local times
+ */
+function getDuration(string $from, string $to, string $departureAirport, string $destinationAirport) {
 	// set local times ...
 	$timezone = getTimezoneForAirport($departureAirport);
 	$fromLocal = new DateTime($from . ' ' . $timezone);
@@ -45,7 +62,15 @@ function getDuration($from, $to, $departureAirport, $destinationAirport) {
 	);
 }
 
-function getData($from, $to, $departureAirport, $destinationAirport) {
+/**
+ * Get duration data.
+ * @param  string $from               Departure date
+ * @param  string $to                 Destination datetime
+ * @param  string $departureAirport   IATA code for departure airport
+ * @param  string $destinationAirport IATA code for destination airport
+ * @return object                     Duration data
+ */
+function getData(string $from, string $to, string $departureAirport, string $destinationAirport) {
 	$data = null;
 	// @TODO: check for valid datetime strings
 	// @TODO: check for valid IATA codes
