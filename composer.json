@@ -1,4 +1,6 @@
 {
+	"name": "flight-durations",
+	"description": "Get actual flight durations using timezone information provided by OpenFlights.org.",
     "require": {
         "symfony/http-foundation": "^3.1"
     }

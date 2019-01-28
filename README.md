@@ -1,6 +1,6 @@
 # Flight Durations (PHP)
 
-Get actual flight durations using [timezone information](http://openflights.org/data.html) provided by OpenFlights.org.
+Get actual flight durations using [timezone information](https://openflights.org/data.html) provided by OpenFlights.org.
 
 ## Required parameters
 
@@ -13,7 +13,7 @@ Get actual flight durations using [timezone information](http://openflights.org/
 
 Using [HTTPie](https://httpie.org):
 
-```
+```bash
 $ http --body https://flightduration.dev/ from==2016-11-10T16:25 to==2016-11-10T20:40 departureAirport==AMS destinationAirport==MIA
 {
     "duration": "P0DT10H15M",

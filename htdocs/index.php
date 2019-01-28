@@ -1,93 +1,107 @@
 <?php
+/**
+ * Provides an API for flight durations.
+ *
+ * @package   flight-durations
+ * @link      https://github.com/Dreamseer/flight-durations/
+ * @author    Marc Görtz (https://marcgoertz.de/)
+ * @license   MIT License
+ * @copyright Copyright (c) 2016-2019, Marc Görtz
+ * @version   2.0.0
+ */
+namespace Marcgoertz\FlightDuration;
+
 require(dirname(__FILE__) . '/../vendor/autoload.php');
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use DateTime;
+use DateTimeZone;
 
-// get request parameters
-$request = Request::createFromGlobals();
-$from = $request->query->get('from');
-$to = $request->query->get('to');
-$departureAirport = $request->query->get('departureAirport');
-$destinationAirport = $request->query->get('destinationAirport');
+class FlightDuration
+{
+	private $request = null;
+	private $from = null;
+	private $to = null;
+	private $departureAirport = null;
+	private $destinationAirport = null;
+	private $timezones = [];
 
-/**
- * Get timezones from CSV file.
- * @return array Timezones for each airport
- */
-function getTimezones() {
-	$timezones = array();
-	$flightData = array_map('str_getcsv', file(dirname(__FILE__) . '/../vendor/openflights/airports.dat'));
-	foreach ($flightData as $data) {
-		if ($data[11] !== '\N') {
-			$timezones[$data[4]] = $data[11];
+	function __construct()
+	{
+		// Get request parameters
+		$this->request = Request::createFromGlobals();
+		$this->from = $this->request->query->get('from');
+		$this->to = $this->request->query->get('to');
+		$this->departureAirport = $this->request->query->get('departureAirport');
+		$this->destinationAirport = $this->request->query->get('destinationAirport');
+
+		// Get timezones from CSV file
+		$flightData = array_map('str_getcsv', file(dirname(__FILE__) . '/../vendor/openflights/airports.dat'));
+		foreach ($flightData as $data) {
+			if ($data[11] !== '\N') {
+				$this->timezones[$data[4]] = $data[11];
+			}
 		}
 	}
-	return $timezones;
-}
 
-/**
- * Get timezone name for a specific airport.
- * @param  string $airport IATA airport code
- * @return string          Timezone name
- */
-function getTimezoneForAirport(string $airport) {
-	global $timezones;
-	$timezone = new DateTimeZone($timezones[$airport]);
-	return $timezone->getName();
-}
 
-/**
- * Get duration offset between two airports.
- * @param  string $from               Departure date
- * @param  string $to                 Destination datetime
- * @param  string $departureAirport   IATA code for departure airport
- * @param  string $destinationAirport IATA code for destination airport
- * @return array                      Duration and local times
- */
-function getDuration(string $from, string $to, string $departureAirport, string $destinationAirport) {
-	// set local times ...
-	$timezone = getTimezoneForAirport($departureAirport);
-	$fromLocal = new DateTime($from . ' ' . $timezone);
-	$timezone = getTimezoneForAirport($destinationAirport);
-	$toLocal = new DateTime($to . ' ' . $timezone);
-
-	// ... and calculate difference
-	$diff = $toLocal->diff($fromLocal, true);
-
-	return array(
-		'from'     => $fromLocal->format("Y-m-d\TH:iP"),
-		'to'       => $toLocal->format("Y-m-d\TH:iP"),
-		'duration' => $diff->format("P%dDT%hH%iM"),
-	);
-}
-
-/**
- * Get duration data.
- * @param  string $from               Departure date
- * @param  string $to                 Destination datetime
- * @param  string $departureAirport   IATA code for departure airport
- * @param  string $destinationAirport IATA code for destination airport
- * @return object                     Duration data
- */
-function getData(string $from, string $to, string $departureAirport, string $destinationAirport) {
-	$data = null;
-	// @TODO: check for valid datetime strings
-	// @TODO: check for valid IATA codes
-	if ($from !== null && $to !== null && $departureAirport !== null && $destinationAirport !== null) {
-		$data = getDuration($from, $to, $departureAirport, $destinationAirport);
+	/**
+	 * Get timezone name for a specific airport.
+	 * @param  string $airport IATA airport code
+	 * @return string          Timezone name
+	 */
+	private function getTimezoneForAirport(string $airport)
+	{
+		$timezone = new DateTimeZone($this->timezones[$airport]);
+		return $timezone->getName();
 	}
-	return $data;
+
+	/**
+	 * Get duration offset between two airports.
+	 * @param  string $from               Departure date
+	 * @param  string $to                 Destination datetime
+	 * @param  string $departureAirport   IATA code for departure airport
+	 * @param  string $destinationAirport IATA code for destination airport
+	 * @return array                      Duration and local times
+	 */
+	private function getDuration(string $from, string $to, string $departureAirport, string $destinationAirport)
+	{
+		// Set local times ...
+		$timezone = $this->getTimezoneForAirport($departureAirport);
+		$fromLocal = new DateTime($from . ' ' . $timezone);
+		$timezone = $this->getTimezoneForAirport($destinationAirport);
+		$toLocal = new DateTime($to . ' ' . $timezone);
+
+		// ... and calculate difference
+		$diff = $toLocal->diff($fromLocal, true);
+
+		return [
+			'from' => $fromLocal->format("Y-m-d\TH:iP"),
+			'to' => $toLocal->format("Y-m-d\TH:iP"),
+			'duration' => $diff->format("P%dDT%hH%iM"),
+		];
+	}
+
+	public function init()
+	{
+		$data = null;
+		if (is_string($this->from) && is_string($this->to) && is_string($this->departureAirport) && is_string($this->destinationAirport)) {
+			$data = $this->getDuration($this->from, $this->to, $this->departureAirport, $this->destinationAirport);
+		}
+
+		$response = new JsonResponse(
+			$data,
+			$data ? JsonResponse::HTTP_OK : JsonResponse::HTTP_BAD_REQUEST,
+			[
+				'content-type' => 'application/json',
+			]
+		);
+		$response->setCharset('utf-8');
+		$response->prepare($this->request);
+		$response->send();
+	}
 }
 
-$timezones = getTimezones();
-$data = getData($from, $to, $departureAirport, $destinationAirport);
-
-$response = new JsonResponse(
-	$data,
-	$data ? JsonResponse::HTTP_OK : JsonResponse::HTTP_BAD_REQUEST,
-	array('content-type' => 'application/json')
-);
-$response->setCharset('utf-8');
-$response->prepare($request);
-$response->send();
+$durations = new FlightDuration();
+$durations->init();
