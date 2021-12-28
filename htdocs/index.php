@@ -3,7 +3,7 @@
  * Provides an API for flight durations.
  *
  * @package   flight-durations
- * @link      https://github.com/Dreamseer/flight-durations/
+ * @link      https://github.com/mrcgrtz/flight-durations/
  * @author    Marc Görtz (https://marcgoertz.de/)
  * @license   MIT License
  * @copyright Copyright (c) 2016-2019, Marc Görtz
