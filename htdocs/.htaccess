@@ -8,7 +8,4 @@
     <IfModule mod_filter.c>
         AddOutputFilterByType DEFLATE "application/json"
     </IfModule>
-    <IfModule mod_mime.c>
-        AddEncoding gzip              svgz
-    </IfModule>
 </IfModule>
