@@ -37,7 +37,7 @@ class FlightDuration
 		$this->destinationAirport = $this->request->query->get('destinationAirport');
 
 		// Get timezones from CSV file
-		$flightData = array_map('str_getcsv', file(dirname(__FILE__) . '/../vendor/openflights/airports.dat'));
+		$flightData = array_map('str_getcsv', file(dirname(__FILE__) . '/../data/openflights/airports.dat'));
 		foreach ($flightData as $data) {
 			if ($data[11] !== '\N') {
 				$this->timezones[$data[4]] = $data[11];
