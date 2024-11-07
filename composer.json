@@ -3,6 +3,6 @@
     "description": "Get actual flight durations using timezone information provided by OpenFlights.org.",
     "require": {
         "php": ">=8.0",
-        "symfony/http-foundation": "^3.1"
+        "symfony/http-foundation": "^5.4"
     }
 }
