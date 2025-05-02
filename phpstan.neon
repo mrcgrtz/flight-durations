@@ -1,0 +1,7 @@
+parameters:
+	level: 10
+	paths:
+		- public
+		- src
+	excludePaths:
+		- vendor

@@ -1,0 +1,6 @@
+name: flight-duration
+type: php
+docroot: public
+php_version: "8.3"
+omit_containers: [db]
+disable_upload_dirs_warning: true
