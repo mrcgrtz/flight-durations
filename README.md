@@ -1,36 +1,122 @@
-# Flight Durations (PHP)
+# Flight Duration (PHP)
 
-Get actual flight durations using [timezone information](https://openflights.org/data.html) provided by OpenFlights.org.
+[![PHP Composer](https://github.com/mrcgrtz/flight-duration/actions/workflows/php.yml/badge.svg)](https://github.com/mrcgrtz/flight-duration/actions/workflows/php.yml)
+[![MIT license](https://img.shields.io/github/license/mrcgrtz/flight-duration)](https://github.com/mrcgrtz/flight-duration/blob/main/LICENSE.md)
 
-## Required parameters
+Calculate actual flight durations between airports using timezone data from [OpenFlights.org](https://openflights.org/data.html).
 
-* `from` = departure datetime, i.e. `2016-11-10T16:25`
-* `to` = arrival datetime, i.e. `2016-11-10T20:40`
-* `departureAirport` = 3-letter IATA code of departure airport, i.e. `AMS`
-* `destinationAirport` =  3-letter IATA code of destinationairport, i.e. `MIA`
+## Features
 
-## Sample requests
+- Calculate flight durations considering different timezones
+- Support for over 12,000 airports worldwide
+- Simple REST API with JSON responses
+- OpenAPI documentation
 
-Start the builtin server using:
+## Installation
+
+### Using Composer
 
 ```shell
-php -S localhost:9000 -t htdocs
+composer require marcgoertz/flight-duration
+```
+
+### Manual Installation
+
+1. Clone the repository:
+
+    ```shell
+    git clone https://github.com/mrcgrtz/flight-duration.git
+    cd flight-duration
+    ```
+
+2. Install dependencies:
+
+    ```shell
+    composer install
+    ```
+
+## Usage
+
+### Starting the Server
+
+```shell
+# Using PHP's built-in server
+composer start
+
+# Using ddev
+ddev start
+```
+
+### API Parameters
+
+| Parameter | Description | Format | Example |
+|-----------|-------------|--------|---------|
+| `from` | Departure datetime | YYYY-MM-DDTHH:MM | `2023-05-01T10:30` |
+| `to` | Arrival datetime | YYYY-MM-DDTHH:MM | `2023-05-01T14:45` |
+| `departureAirport` | IATA code of departure airport | 3 uppercase letters | `FRA` |
+| `destinationAirport` | IATA code of destination airport | 3 uppercase letters | `JFK` |
+
+### Example Requests
+
+Using [curl](https://curl.se/):
+
+```shell
+curl "http://localhost:8000/?from=2023-05-01T10:30&to=2023-05-01T14:45&departureAirport=FRA&destinationAirport=JFK"
 ```
 
 Using [Curlie](https://github.com/rs/curlie):
 
 ```shell
-$ curlie http://localhost:9000/ from==2016-11-10T16:25 to==2016-11-10T20:40 departureAirport==AMS destinationAirport==MIA
-{
-    "duration": "P0DT10H15M",
-    "from": "2016-11-10T16:25+01:00",
-    "to": "2016-11-10T20:40-05:00"
-}
+curlie http://localhost:8000/ from==2023-05-01T10:30 to==2023-05-01T14:45 departureAirport==FRA destinationAirport==JFK
+```
 
-$ curlie http://localhost:9000/ from==2016-12-14T13:50 to==2016-12-15T06:50 departureAirport==ZRH destinationAirport==HKT
+### Example Response
+
+```json
 {
-    "duration": "P0DT11H0M",
-    "from": "2016-12-14T13:50+01:00",
-    "to": "2016-12-15T06:50+07:00"
+  "from": "2023-05-01T10:30+02:00",
+  "to": "2023-05-01T14:45-04:00",
+  "duration": "P0DT8H15M"
 }
 ```
+
+## Library Usage
+
+You can also use `FlightDuration` as a library in your PHP project:
+
+```php
+use Marcgoertz\FlightDuration;
+
+$flightDuration = new FlightDuration();
+$duration = $flightDuration->getDuration(
+    '2023-05-01T10:30',      // Departure time
+    '2023-05-01T14:45',      // Arrival time
+    'FRA',                   // Departure airport
+    'JFK'                    // Destination airport
+);
+
+print_r($duration);
+```
+
+## Response Format
+
+The API returns a JSON object with three properties:
+
+- `from`: ISO 8601 formatted departure time with timezone
+- `to`: ISO 8601 formatted arrival time with timezone
+- `duration`: ISO 8601 duration format (PnYnMnDTnHnMnS)
+
+## Development
+
+### Requirements
+
+- PHP 8.0 or higher
+- Composer
+
+## Credits
+
+The airport data is provided by [OpenFlights.org](https://openflights.org/data.html).
+
+## License
+
+MIT © Marc Görtz
