@@ -1,0 +1,23 @@
+name: Release
+
+on:
+    release:
+        types: [created]
+
+jobs:
+    build:
+
+        runs-on: ubuntu-latest
+
+        permissions:
+            contents: read
+            packages: write
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Push to Packagist
+              uses: mnavarrocarter/packagist-update@v1.0.0
+              with:
+                  username: 'mrcgrtz'
+                  api_token: ${{ secrets.PACKAGIST_TOKEN }}
