@@ -9,9 +9,8 @@
     }
   ],
   "autoload": {
-    "psr-4": {
-      "Marcgoertz\\": "src/"
-    }
+    "psr-0": { "Marcgoertz\\": "src/" },
+    "psr-4": { "Marcgoertz\\": "src/" }
   },
   "config": {
     "allow-plugins": {
