@@ -3,7 +3,7 @@
 [![PHP Composer](https://github.com/mrcgrtz/flight-duration/actions/workflows/php.yml/badge.svg)](https://github.com/mrcgrtz/flight-duration/actions/workflows/php.yml)
 [![MIT license](https://img.shields.io/github/license/mrcgrtz/flight-duration)](https://github.com/mrcgrtz/flight-duration/blob/main/LICENSE.md)
 
-Calculate actual flight durations between airports using timezone data from [OpenFlights.org](https://openflights.org/data.html).
+Calculate actual flight durations between airports using timezone data from [OpenFlights.org](https://openflights.org/data.php).
 
 ## Features
 
@@ -115,7 +115,7 @@ The API returns a JSON object with three properties:
 
 ## Credits
 
-The airport data is provided by [OpenFlights.org](https://openflights.org/data.html).
+The airport data is provided by [OpenFlights.org](https://openflights.org/data.php).
 
 ## License
 
